@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #18181f;
+    --bg4: #1e1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #55556a;
+    --accent: #b8a9ff;
+    --accent2: #7c6ddb;
+    --gold: #f5c97a;
+    --gold2: #c49a3c;
+    --red: #ff6b7a;
+    --green: #6bffb8;
+    --green2: #2a9d6f;
+    --teal: #5fd4c8;
+    --pink: #ff82c8;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(184,169,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184,169,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 2.5rem 2.5rem 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { color: var(--accent); font-style: italic; }
+
+  .date-time {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+    line-height: 1.8;
+  }
+
+  /* GOALS BANNER */
+  .goals-banner {
+    position: relative;
+    z-index: 10;
+    margin: 1.5rem 2.5rem;
+    background: linear-gradient(135deg, rgba(184,169,255,0.12) 0%, rgba(95,212,200,0.08) 100%);
+    border: 1px solid rgba(184,169,255,0.25);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    overflow: hidden;
+  }
+
+  .goals-banner::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(184,169,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .goals-banner h2 {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .goals-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .goal-pill {
+    background: rgba(184,169,255,0.1);
+    border: 1px solid rgba(184,169,255,0.2);
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .goal-pill:hover { background: rgba(184,169,255,0.18); }
+
+  .goal-pill .del {
+    opacity: 0;
+    font-size: 0.7rem;
+    color: var(--red);
+    transition: opacity 0.2s;
+  }
+
+  .goal-pill:hover .del { opacity: 1; }
+
+  .goal-add-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .goal-add-form input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border2);
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    outline: none;
+  }
+
+  .goal-add-form input:focus { border-color: var(--accent); }
+
+  /* MAIN GRID */
+  .main-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    padding: 0 2.5rem 2.5rem;
+  }
+
+  @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: var(--border2); }
+
+  .card.full-width { grid-column: 1 / -1; }
+  .card.col-2 { grid-column: span 2; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 600;
+  }
+
+  .card-title-main {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text2);
+  }
+
+  /* BTN */
+  .btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.75rem;
+    color: var(--text2);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.accent { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+  .btn.accent:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* HABITS */
+  .habits-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .habit-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .habit-name {
+    flex: 1;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+
+  .habit-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .habit-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0;
+  }
+
+  .habit-dot.done { background: var(--green2); border-color: var(--green); }
+
+  .habit-streak {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gold);
+    min-width: 28px;
+    text-align: right;
+  }
+
+  .habit-del {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .habit-del:hover { color: var(--red); }
+
+  .add-habit-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .add-habit-form input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.75rem;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    outline: none;
+  }
+
+  .add-habit-form input:focus { border-color: var(--accent); }
+
+  /* NOTES */
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .notes-list::-webkit-scrollbar { width: 3px; }
+  .notes-list::-webkit-scrollbar-track { background: transparent; }
+  .notes-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+  .note-card {
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    border-left: 3px solid;
+    background: var(--bg3);
+    position: relative;
+  }
+
+  .note-card.purple { border-color: var(--accent); }
+  .note-card.teal { border-color: var(--teal); }
+  .note-card.gold { border-color: var(--gold); }
+  .note-card.pink { border-color: var(--pink); }
+  .note-card.red { border-color: var(--red); }
+  .note-card.green { border-color: var(--green); }
+
+  .note-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text3);
+    margin-bottom: 0.35rem;
+  }
+
+  .note-text {
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .note-del {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s;
+    line-height: 1;
+  }
+
+  .note-card:hover .note-del { opacity: 1; }
+  .note-del:hover { color: var(--red); }
+
+  .note-composer {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .note-composer textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    outline: none;
+    resize: none;
+    min-height: 70px;
+    line-height: 1.5;
+  }
+
+  .note-composer textarea:focus { border-color: var(--accent); }
+
+  .note-composer-controls {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .color-pick {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .color-pick:hover, .color-pick.active { transform: scale(1.3); border-color: #fff; }
+  .cp-purple { background: var(--accent); }
+  .cp-teal { background: var(--teal); }
+  .cp-gold { background: var(--gold); }
+  .cp-pink { background: var(--pink); }
+  .cp-red { background: var(--red); }
+  .cp-green { background: var(--green); }
+
+  /* YOUTUBE STATS */
+  .yt-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+    text-align: center;
+  }
+
+  .stat-box .val {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--text);
+    display: block;
+  }
+
+  .stat-box .lbl {
+    font-size: 0.62rem;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  .yt-goal-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .yt-goal-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .yt-goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .yt-goal-name { font-size: 0.78rem; color: var(--text2); }
+
+  .yt-goal-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text3);
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--bg4);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }
+
+  .yt-edit-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .yt-edit-form input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    outline: none;
+  }
+
+  .yt-edit-form input:focus { border-color: var(--gold); }
+
+  /* IDEAS */
+  .ideas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .ideas-list::-webkit-scrollbar { width: 3px; }
+  .ideas-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+  .idea-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    transition: border-color 0.15s;
+  }
+
+  .idea-item:hover { border-color: var(--border2); }
+
+  .idea-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .status-idea { background: var(--accent); }
+  .status-filming { background: var(--gold); }
+  .status-editing { background: var(--teal); }
+  .status-done { background: var(--green2); }
+
+  .idea-body { flex: 1; }
+
+  .idea-title {
+    font-size: 0.82rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .idea-meta {
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-top: 0.2rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .idea-del {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .idea-item:hover .idea-del { opacity: 1; }
+  .idea-del:hover { color: var(--red); }
+
+  .idea-add-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .idea-add-form input {
+    flex: 1;
+    min-width: 120px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.75rem;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    outline: none;
+  }
+
+  .idea-add-form input:focus { border-color: var(--gold); }
+
+  .idea-add-form select {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem;
+    color: var(--text2);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    outline: none;
+  }
+
+  /* STATUS LEGEND */
+  .status-legend {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.65rem;
+    color: var(--text3);
+  }
+
+  .legend-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  /* WEEK LABEL */
+  .week-labels {
+    display: flex;
+    gap: 4px;
+    padding-left: 0;
+    margin-bottom: 4px;
+  }
+
+  .week-lbl {
+    width: 18px;
+    text-align: center;
+    font-size: 0.55rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card { animation: fadeIn 0.4s ease both; }
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  .card:nth-child(4) { animation-delay: 0.2s; }
+  .card:nth-child(5) { animation-delay: 0.25s; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0.75rem 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">my <span>space.</span></div>
+    <div style="font-size:0.7rem; color:var(--text3); margin-top:0.25rem;" id="greeting"></div>
+  </div>
+  <div class="date-time" id="clock"></div>
+</header>
+
+<!-- GOALS BANNER -->
+<div class="goals-banner" id="goalsBanner">
+  <h2>⚡ my goals — always in sight</h2>
+  <div class="goals-list" id="goalsList"></div>
+  <div class="goal-add-form">
+    <input type="text" id="goalInput" placeholder="Add a new goal..." maxlength="80">
+    <button class="btn accent" onclick="addGoal()">Add</button>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-grid">
+
+  <!-- HABITS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">habit tracker</span>
+      <span style="font-size:0.7rem; color:var(--text3);" id="habitDate"></span>
+    </div>
+    <div class="week-labels" id="weekLabels"></div>
+    <div class="habits-grid" id="habitsList"></div>
+    <div class="add-habit-form" style="margin-top:1rem;">
+      <input type="text" id="habitInput" placeholder="New habit..." maxlength="30">
+      <button class="btn accent" onclick="addHabit()">+</button>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="card col-2">
+    <div class="card-header">
+      <span class="card-title">notes</span>
+      <span style="font-size:0.65rem; color:var(--text3);" id="notesCount"></span>
+    </div>
+    <div class="notes-list" id="notesList"></div>
+    <div class="note-composer">
+      <textarea id="noteText" placeholder="What's on your mind..."></textarea>
+      <div class="note-composer-controls">
+        <span style="font-size:0.65rem; color:var(--text3); margin-right:0.25rem;">Color:</span>
+        <div class="color-pick cp-purple active" data-color="purple" onclick="selectColor(this)"></div>
+        <div class="color-pick cp-teal" data-color="teal" onclick="selectColor(this)"></div>
+        <div class="color-pick cp-gold" data-color="gold" onclick="selectColor(this)"></div>
+        <div class="color-pick cp-pink" data-color="pink" onclick="selectColor(this)"></div>
+        <div class="color-pick cp-red" data-color="red" onclick="selectColor(this)"></div>
+        <div class="color-pick cp-green" data-color="green" onclick="selectColor(this)"></div>
+        <div style="flex:1"></div>
+        <button class="btn accent" onclick="addNote()">Save Note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- YT STATS -->
+  <div class="card col-2">
+    <div class="card-header">
+      <span class="card-title">youtube progression</span>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <span id="ytLiveIndicator" style="display:none;align-items:center;gap:0.35rem;font-size:0.65rem;color:var(--green);">
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;"></span>live
+        </span>
+        <span id="ytLastUpdated" style="font-size:0.62rem;color:var(--text3);"></span>
+        <button class="btn" onclick="fetchYtStats()" id="ytRefreshBtn">↻ refresh</button>
+      </div>
+    </div>
+    <div id="ytFetchError" style="display:none;font-size:0.75rem;color:var(--red);margin-bottom:0.75rem;padding:0.5rem 0.75rem;background:rgba(255,107,122,0.08);border-radius:var(--radius-sm);border:1px solid rgba(255,107,122,0.2);"></div>
+    <div class="yt-stats-grid" id="ytStatsGrid"></div>
+    <hr class="divider">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;">
+      <span style="font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3);">milestone goals</span>
+      <span style="font-size:0.62rem;color:var(--text3);">auto-levels up when hit ✦</span>
+    </div>
+    <div class="yt-goal-row" id="ytGoalRows"></div>
+    <div id="ytMilestoneToast" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:rgba(107,255,184,0.1);border:1px solid rgba(107,255,184,0.25);border-radius:var(--radius-sm);font-size:0.8rem;color:var(--green);animation:fadeIn 0.4s ease;"></div>
+  </div>
+
+  <!-- YT IDEAS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">youtube ideas</span>
+      <span style="font-size:0.65rem; color:var(--text3);" id="ideasCount"></span>
+    </div>
+    <div class="status-legend">
+      <div class="legend-item"><div class="legend-dot status-idea"></div>idea</div>
+      <div class="legend-item"><div class="legend-dot status-filming"></div>filming</div>
+      <div class="legend-item"><div class="legend-dot status-editing"></div>editing</div>
+      <div class="legend-item"><div class="legend-dot status-done"></div>done</div>
+    </div>
+    <div class="ideas-list" id="ideasList"></div>
+    <div class="idea-add-form">
+      <input type="text" id="ideaInput" placeholder="Video idea..." maxlength="100">
+      <select id="ideaStatus">
+        <option value="idea">💡 Idea</option>
+        <option value="filming">🎬 Filming</option>
+        <option value="editing">✂️ Editing</option>
+        <option value="done">✅ Done</option>
+      </select>
+      <button class="btn accent" onclick="addIdea()">+</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── STORAGE ──────────────────────────────────────────────
+const S = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } },
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+}
+
+// ── CLOCK & GREETING ──────────────────────────────────────
+function updateClock() {
+  const now = new Date()
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds()
+  const pad = n => String(n).padStart(2,'0')
+  document.getElementById('clock').innerHTML =
+    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()} ${now.getFullYear()}<br>${pad(h)}:${pad(m)}:${pad(s)}`
+
+  const greetings = h < 5 ? '🌙 up late?' : h < 12 ? '🌅 good morning' : h < 17 ? '☀️ good afternoon' : h < 21 ? '🌆 good evening' : '🌙 good night'
+  document.getElementById('greeting').textContent = greetings
+
+  const days2 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  document.getElementById('habitDate').textContent = days2[now.getDay()]
+}
+setInterval(updateClock, 1000)
+updateClock()
+
+// ── GOALS ─────────────────────────────────────────────────
+let goals = S.get('goals') || ['Launch my YouTube channel', 'Be consistent every day', '1000 subscribers']
+
+function renderGoals() {
+  const list = document.getElementById('goalsList')
+  list.innerHTML = ''
+  goals.forEach((g, i) => {
+    const pill = document.createElement('div')
+    pill.className = 'goal-pill'
+    pill.innerHTML = `✦ ${g} <span class="del" onclick="delGoal(${i})">✕</span>`
+    list.appendChild(pill)
+  })
+}
+
+function addGoal() {
+  const inp = document.getElementById('goalInput')
+  const val = inp.value.trim()
+  if (!val) return
+  goals.push(val)
+  S.set('goals', goals)
+  renderGoals()
+  inp.value = ''
+}
+
+function delGoal(i) {
+  goals.splice(i, 1)
+  S.set('goals', goals)
+  renderGoals()
+}
+
+document.getElementById('goalInput').addEventListener('keydown', e => { if (e.key === 'Enter') addGoal() })
+renderGoals()
+
+// ── HABITS ────────────────────────────────────────────────
+let habits = S.get('habits') || [
+  { name: 'Exercise', completions: {} },
+  { name: 'Read 30 mins', completions: {} },
+  { name: 'Drink water', completions: {} },
+  { name: 'No social media', completions: {} }
+]
+
+const today = () => new Date().toISOString().slice(0,10)
+const last7Days = () => Array.from({length:7}, (_,i) => {
+  const d = new Date(); d.setDate(d.getDate() - 6 + i); return d.toISOString().slice(0,10)
+})
+
+function renderHabits() {
+  const days7 = last7Days()
+  const labels = document.getElementById('weekLabels')
+  const dayShorts = ['Su','Mo','Tu','We','Th','Fr','Sa']
+  labels.innerHTML = '<div class="week-lbl" style="flex:1;min-width:80px;"></div>' +
+    days7.map(d => `<div class="week-lbl">${dayShorts[new Date(d+'T12:00:00').getDay()]}</div>`).join('') +
+    '<div class="week-lbl" style="min-width:32px;"></div>' +
+    '<div class="week-lbl" style="min-width:20px;"></div>'
+
+  const list = document.getElementById('habitsList')
+  list.innerHTML = ''
+  habits.forEach((h, hi) => {
+    const streak = calcStreak(h)
+    const row = document.createElement('div')
+    row.className = 'habit-row'
+    row.innerHTML = `
+      <div class="habit-name">${h.name}</div>
+      <div class="habit-dots" id="dots-${hi}"></div>
+      <div class="habit-streak">${streak > 0 ? streak+'🔥' : ''}</div>
+      <button class="habit-del" onclick="delHabit(${hi})" title="Remove">✕</button>
+    `
+    list.appendChild(row)
+    const dotsEl = document.getElementById(`dots-${hi}`)
+    days7.forEach(d => {
+      const dot = document.createElement('button')
+      dot.className = 'habit-dot' + (h.completions[d] ? ' done' : '')
+      dot.title = d
+      dot.onclick = () => toggleHabit(hi, d)
+      dotsEl.appendChild(dot)
+    })
+  })
+}
+
+function calcStreak(h) {
+  let streak = 0; const d = new Date()
+  while (true) {
+    const key = d.toISOString().slice(0,10)
+    if (h.completions[key]) { streak++; d.setDate(d.getDate()-1) }
+    else break
+  }
+  return streak
+}
+
+function toggleHabit(hi, date) {
+  habits[hi].completions[date] = !habits[hi].completions[date]
+  S.set('habits', habits)
+  renderHabits()
+}
+
+function addHabit() {
+  const inp = document.getElementById('habitInput')
+  const val = inp.value.trim()
+  if (!val) return
+  habits.push({ name: val, completions: {} })
+  S.set('habits', habits)
+  renderHabits()
+  inp.value = ''
+}
+
+function delHabit(i) {
+  habits.splice(i, 1)
+  S.set('habits', habits)
+  renderHabits()
+}
+
+document.getElementById('habitInput').addEventListener('keydown', e => { if (e.key === 'Enter') addHabit() })
+renderHabits()
+
+// ── NOTES ─────────────────────────────────────────────────
+let notes = S.get('notes') || []
+let selectedColor = 'purple'
+
+function selectColor(el) {
+  document.querySelectorAll('.color-pick').forEach(c => c.classList.remove('active'))
+  el.classList.add('active')
+  selectedColor = el.dataset.color
+}
+
+function renderNotes() {
+  const list = document.getElementById('notesList')
+  list.innerHTML = ''
+  const count = document.getElementById('notesCount')
+  count.textContent = notes.length + ' note' + (notes.length !== 1 ? 's' : '')
+  if (notes.length === 0) {
+    list.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;padding:0.5rem 0;">No notes yet — write your first one below.</div>'
+    return
+  }
+  ;[...notes].reverse().forEach((n, ri) => {
+    const i = notes.length - 1 - ri
+    const el = document.createElement('div')
+    el.className = `note-card ${n.color}`
+    el.innerHTML = `
+      <div class="note-meta">${n.date}</div>
+      <div class="note-text">${escHtml(n.text)}</div>
+      <button class="note-del" onclick="delNote(${i})">✕</button>
+    `
+    list.appendChild(el)
+  })
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+}
+
+function addNote() {
+  const ta = document.getElementById('noteText')
+  const text = ta.value.trim()
+  if (!text) return
+  const now = new Date()
+  const d = now.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' })
+  const t = now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' })
+  notes.push({ text, color: selectedColor, date: `${d} at ${t}` })
+  S.set('notes', notes)
+  renderNotes()
+  ta.value = ''
+}
+
+document.getElementById('noteText').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) addNote()
+})
+
+function delNote(i) {
+  notes.splice(i, 1)
+  S.set('notes', notes)
+  renderNotes()
+}
+
+renderNotes()
+
+// ── YOUTUBE LIVE API ──────────────────────────────────────
+const YT_API_KEY = 'AIzaSyAb38DZocvMgnuURSsxwCVSmZAyVWwxXQI'
+const YT_CHANNEL_ID = 'UCMCQgjULG_Vd7LrkR4IOPSw'
+const YT_REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes
+
+let ytStats = S.get('ytStats') || { subs: 2809, views: 8300, videos: 0, watchHours: 774 }
+
+const ytLabels = { subs: 'Subscribers', views: 'Total Views', videos: 'Videos', watchHours: 'Watch Hours' }
+const ytColors = { subs: 'var(--accent)', views: 'var(--teal)', videos: 'var(--gold)', watchHours: 'var(--green)' }
+
+function fmtNum(n) {
+  n = parseInt(n) || 0
+  if (n >= 1000000) return (n/1000000).toFixed(1)+'M'
+  if (n >= 1000) return (n/1000).toFixed(1)+'K'
+  return String(n)
+}
+
+async function fetchYtStats() {
+  const btn = document.getElementById('ytRefreshBtn')
+  const errEl = document.getElementById('ytFetchError')
+  const indicator = document.getElementById('ytLiveIndicator')
+  btn.textContent = '↻ fetching...'
+  btn.disabled = true
+  errEl.style.display = 'none'
+  try {
+    const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${YT_CHANNEL_ID}&key=${YT_API_KEY}`
+    const res = await fetch(url)
+    const data = await res.json()
+    if (data.error) throw new Error(data.error.message)
+    if (!data.items || data.items.length === 0) throw new Error('Channel not found')
+    const stats = data.items[0].statistics
+    const prev = { ...ytStats }
+    ytStats = {
+      subs: parseInt(stats.subscriberCount) || 0,
+      views: parseInt(stats.viewCount) || 0,
+      videos: parseInt(stats.videoCount) || 0,
+      watchHours: ytStats.watchHours // not in public API, keep last known
+    }
+    S.set('ytStats', ytStats)
+    S.set('ytLastFetched', Date.now())
+    indicator.style.display = 'flex'
+    const now = new Date()
+    document.getElementById('ytLastUpdated').textContent = `updated ${now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}`
+    renderYtStats(prev)
+  } catch (e) {
+    errEl.textContent = '⚠ Could not fetch live stats: ' + e.message
+    errEl.style.display = 'block'
+    renderYtStats()
+  } finally {
+    btn.textContent = '↻ refresh'
+    btn.disabled = false
+  }
+}
+
+// Auto-leveling milestone system
+// Milestones for subs: 100, 250, 500, 1K, 2.5K, 5K, 10K, 25K, 50K, 100K, 250K, 500K, 1M
+const subMilestones = [100,250,500,1000,2500,5000,10000,25000,50000,100000,250000,500000,1000000]
+const viewMilestones = [1000,5000,10000,50000,100000,500000,1000000,5000000,10000000]
+const videoMilestones = [1,5,10,25,50,100,250,500]
+
+function getNextMilestone(arr, current) {
+  return arr.find(m => m > current) || arr[arr.length-1]
+}
+
+function getPrevMilestone(arr, current) {
+  const passed = arr.filter(m => m <= current)
+  return passed.length > 1 ? passed[passed.length-2] : 0
+}
+
+let ytGoals = S.get('ytGoals2') || null // use ytGoals2 to avoid conflict with old data
+
+function buildAutoGoals(prev) {
+  const goals = []
+  const statSets = [
+    { key: 'subs', label: 'Subscribers', milestones: subMilestones },
+    { key: 'views', label: 'Total Views', milestones: viewMilestones },
+    { key: 'videos', label: 'Videos', milestones: videoMilestones }
+  ]
+  const toasts = []
+  statSets.forEach(({ key, label, milestones }) => {
+    const current = ytStats[key] || 0
+    const next = getNextMilestone(milestones, current)
+    const from = getPrevMilestone(milestones, next)
+    // Check if we just crossed a milestone
+    if (prev && prev[key] !== undefined) {
+      const justCrossed = milestones.filter(m => (prev[key] || 0) < m && current >= m)
+      justCrossed.forEach(m => toasts.push(`🎉 You hit ${fmtNum(m)} ${label}! Next milestone loading...`))
+    }
+    goals.push({ key, label, current, next, from })
+  })
+  if (toasts.length > 0) showMilestoneToast(toasts.join(' · '))
+  return goals
+}
+
+function showMilestoneToast(msg) {
+  const toast = document.getElementById('ytMilestoneToast')
+  toast.textContent = msg
+  toast.style.display = 'block'
+  setTimeout(() => { toast.style.display = 'none' }, 8000)
+}
+
+function renderYtStats(prev) {
+  const grid = document.getElementById('ytStatsGrid')
+  grid.innerHTML = ''
+  Object.entries(ytStats).forEach(([k, v]) => {
+    if (!ytLabels[k]) return
+    const box = document.createElement('div')
+    box.className = 'stat-box'
+    // Show delta if we have prev
+    let delta = ''
+    if (prev && prev[k] !== undefined && v !== prev[k]) {
+      const diff = v - prev[k]
+      const sign = diff > 0 ? '+' : ''
+      delta = `<span style="font-size:0.6rem;color:${diff>0?'var(--green)':'var(--red)'};margin-left:4px;">${sign}${fmtNum(diff)}</span>`
+    }
+    box.innerHTML = `<span class="val" style="color:${ytColors[k]}">${fmtNum(v)}${delta}</span><span class="lbl">${ytLabels[k]}</span>`
+    grid.appendChild(box)
+  })
+  renderAutoGoals(prev)
+}
+
+function renderAutoGoals(prev) {
+  const goals = buildAutoGoals(prev)
+  const rows = document.getElementById('ytGoalRows')
+  rows.innerHTML = ''
+  goals.forEach(g => {
+    const range = g.next - g.from
+    const progress = g.current - g.from
+    const pct = range > 0 ? Math.min(100, Math.round((progress / range) * 100)) : 100
+    const color = pct >= 100 ? 'var(--green)' : pct >= 70 ? 'var(--teal)' : pct >= 40 ? 'var(--gold)' : 'var(--accent)'
+    const el = document.createElement('div')
+    el.className = 'yt-goal-item'
+    el.innerHTML = `
+      <div class="yt-goal-header">
+        <span class="yt-goal-name">${g.label} → ${fmtNum(g.next)}</span>
+        <span class="yt-goal-num">${fmtNum(g.current)} / ${fmtNum(g.next)} &nbsp;(${pct}%)</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color};"></div></div>
+    `
+    rows.appendChild(el)
+  })
+}
+
+// Initial render with cached stats, then fetch live
+renderYtStats()
+fetchYtStats()
+// Auto-refresh every 5 mins
+setInterval(fetchYtStats, YT_REFRESH_INTERVAL)
+
+// ── IDEAS ─────────────────────────────────────────────────
+let ideas = S.get('ideas') || []
+
+function renderIdeas() {
+  const list = document.getElementById('ideasList')
+  const count = document.getElementById('ideasCount')
+  count.textContent = ideas.length + ' idea' + (ideas.length !== 1 ? 's' : '')
+  list.innerHTML = ''
+  if (ideas.length === 0) {
+    list.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;padding:0.5rem 0;">No ideas yet — add your first video concept!</div>'
+    return
+  }
+  ;[...ideas].reverse().forEach((idea, ri) => {
+    const i = ideas.length - 1 - ri
+    const el = document.createElement('div')
+    el.className = 'idea-item'
+    el.innerHTML = `
+      <div class="idea-status status-${idea.status}"></div>
+      <div class="idea-body">
+        <div class="idea-title">${escHtml(idea.title)}</div>
+        <div class="idea-meta">${idea.status.charAt(0).toUpperCase()+idea.status.slice(1)} · ${idea.date}</div>
+      </div>
+      <button class="idea-del" onclick="cycleIdeaStatus(${i})" title="Change status">↻</button>
+      <button class="idea-del" onclick="delIdea(${i})" title="Delete">✕</button>
+    `
+    list.appendChild(el)
+  })
+}
+
+const statusCycle = ['idea','filming','editing','done']
+
+function cycleIdeaStatus(i) {
+  const cur = statusCycle.indexOf(ideas[i].status)
+  ideas[i].status = statusCycle[(cur + 1) % statusCycle.length]
+  S.set('ideas', ideas)
+  renderIdeas()
+}
+
+function addIdea() {
+  const inp = document.getElementById('ideaInput')
+  const title = inp.value.trim()
+  if (!title) return
+  const status = document.getElementById('ideaStatus').value
+  const now = new Date()
+  const date = now.toLocaleDateString('en-US', { month:'short', day:'numeric' })
+  ideas.push({ title, status, date })
+  S.set('ideas', ideas)
+  renderIdeas()
+  inp.value = ''
+}
+
+function delIdea(i) {
+  ideas.splice(i, 1)
+  S.set('ideas', ideas)
+  renderIdeas()
+}
+
+document.getElementById('ideaInput').addEventListener('keydown', e => { if (e.key === 'Enter') addIdea() })
+renderIdeas()
+</script>
+</body>
+</html>
