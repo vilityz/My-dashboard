@@ -666,9 +666,223 @@
     margin: 0.75rem 0;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+  /* AI SIDEBAR */
+  .ai-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 0 0 1px rgba(184,169,255,0.3), 0 8px 32px rgba(124,109,219,0.4);
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .ai-toggle:hover { background: var(--accent); transform: scale(1.08); }
+
+  .ai-sidebar {
+    position: fixed;
+    top: 0; right: -420px;
+    width: 400px;
+    height: 100vh;
+    background: var(--bg2);
+    border-left: 1px solid var(--border2);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .ai-sidebar.open { right: 0; }
+
+  .ai-sidebar-header {
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .ai-sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ai-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  .ai-close {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    transition: color 0.15s;
+  }
+
+  .ai-close:hover { color: var(--text); }
+
+  .ai-quick-btns {
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .ai-quick-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.7rem;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .ai-quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ai-messages::-webkit-scrollbar { width: 3px; }
+  .ai-messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+  .ai-msg {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .ai-msg.user { align-items: flex-end; }
+  .ai-msg.assistant { align-items: flex-start; }
+
+  .ai-bubble {
+    max-width: 88%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .ai-msg.user .ai-bubble {
+    background: var(--accent2);
+    color: #fff;
+    border-radius: 12px 12px 3px 12px;
+  }
+
+  .ai-msg.assistant .ai-bubble {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 3px;
+  }
+
+  .ai-typing {
+    display: flex;
+    gap: 4px;
+    padding: 0.65rem 0.9rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 12px 3px;
+    width: fit-content;
+  }
+
+  .ai-typing span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    animation: typingDot 1.2s infinite;
+  }
+
+  .ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typingDot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  .ai-input-area {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .ai-input-area textarea {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    outline: none;
+    resize: none;
+    min-height: 38px;
+    max-height: 120px;
+    line-height: 1.4;
+  }
+
+  .ai-input-area textarea:focus { border-color: var(--accent); }
+
+  .ai-send {
+    background: var(--accent2);
+    border: none;
+    border-radius: var(--radius-sm);
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    align-self: flex-end;
+  }
+
+  .ai-send:hover { background: var(--accent); }
+  .ai-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  @keyframes slideIn {
+    from { right: -420px; }
+    to { right: 0; }
   }
 </style>
 </head>
@@ -676,7 +890,7 @@
 
 <header>
   <div>
-    <div class="logo">my <span>space.</span></div>
+    <div class="logo">dgzs <span>hub.</span></div>
     <div style="font-size:0.7rem; color:var(--text3); margin-top:0.25rem;" id="greeting"></div>
   </div>
   <div class="date-time" id="clock"></div>
@@ -850,18 +1064,28 @@ let habits = S.get('habits') || [
 ]
 
 const today = () => new Date().toISOString().slice(0,10)
-const last7Days = () => Array.from({length:7}, (_,i) => {
-  const d = new Date(); d.setDate(d.getDate() - 6 + i); return d.toISOString().slice(0,10)
-})
+const last7Days = () => {
+  // Start from last Monday
+  const d = new Date()
+  const day = d.getDay() // 0=Sun, 1=Mon...
+  const diffToMonday = (day === 0 ? -6 : 1 - day)
+  const monday = new Date(d)
+  monday.setDate(d.getDate() + diffToMonday)
+  return Array.from({length:7}, (_,i) => {
+    const dd = new Date(monday)
+    dd.setDate(monday.getDate() + i)
+    return dd.toISOString().slice(0,10)
+  })
+}
 
 function renderHabits() {
   const days7 = last7Days()
   const labels = document.getElementById('weekLabels')
   const dayShorts = ['Su','Mo','Tu','We','Th','Fr','Sa']
-  labels.innerHTML = '<div class="week-lbl" style="flex:1;min-width:80px;"></div>' +
+  labels.innerHTML = '<div style="flex:1;min-width:110px;"></div>' +
     days7.map(d => `<div class="week-lbl">${dayShorts[new Date(d+'T12:00:00').getDay()]}</div>`).join('') +
-    '<div class="week-lbl" style="min-width:32px;"></div>' +
-    '<div class="week-lbl" style="min-width:20px;"></div>'
+    '<div style="min-width:44px;"></div>' +
+    '<div style="min-width:22px;"></div>'
 
   const list = document.getElementById('habitsList')
   list.innerHTML = ''
@@ -869,11 +1093,12 @@ function renderHabits() {
     const streak = calcStreak(h)
     const row = document.createElement('div')
     row.className = 'habit-row'
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;'
     row.innerHTML = `
-      <div class="habit-name">${h.name}</div>
-      <div class="habit-dots" id="dots-${hi}"></div>
-      <div class="habit-streak">${streak > 0 ? streak+'🔥' : ''}</div>
-      <button class="habit-del" onclick="delHabit(${hi})" title="Remove">✕</button>
+      <div class="habit-name" style="flex:1;min-width:110px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${h.name}</div>
+      <div class="habit-dots" id="dots-${hi}" style="display:flex;gap:4px;"></div>
+      <div class="habit-streak" style="min-width:44px;text-align:right;">${streak > 0 ? streak+'🔥' : ''}</div>
+      <button class="habit-del" onclick="delHabit(${hi})" title="Remove" style="min-width:22px;">✕</button>
     `
     list.appendChild(row)
     const dotsEl = document.getElementById(`dots-${hi}`)
@@ -1189,8 +1414,127 @@ function delIdea(i) {
   renderIdeas()
 }
 
-document.getElementById('ideaInput').addEventListener('keydown', e => { if (e.key === 'Enter') addIdea() })
-renderIdeas()
+<!-- AI SIDEBAR -->
+<button class="ai-toggle" onclick="toggleAI()" title="AI Assistant">✦</button>
+
+<div class="ai-sidebar" id="aiSidebar">
+  <div class="ai-sidebar-header">
+    <div class="ai-sidebar-title">
+      <div class="ai-dot"></div>
+      AI Assistant
+    </div>
+    <button class="ai-close" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-quick-btns">
+    <button class="ai-quick-btn" onclick="aiQuick('Give me 5 YouTube video ideas for my channel @vility')">💡 Video ideas</button>
+    <button class="ai-quick-btn" onclick="aiQuick('Write me a catchy YouTube title for my next video')">✍️ Title help</button>
+    <button class="ai-quick-btn" onclick="aiQuick('How can I grow my YouTube channel faster? I have 2809 subscribers')">📈 Grow faster</button>
+    <button class="ai-quick-btn" onclick="aiQuick('Write a YouTube video description template I can reuse')">📋 Description</button>
+    <button class="ai-quick-btn" onclick="aiQuick('What type of thumbnails get the most clicks on YouTube?')">🖼 Thumbnails</button>
+    <button class="ai-quick-btn" onclick="aiQuick('Give me a 30-day content plan for my YouTube channel')">📅 Content plan</button>
+  </div>
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-msg assistant">
+      <div class="ai-bubble">Hey! I'm your personal assistant for dgzs hub 👋
+
+I know you run the YouTube channel <strong>@vility</strong> with 2,809 subscribers. I can help you with video ideas, titles, growth strategies, content planning, and anything else you need.
+
+Hit one of the quick buttons above or just ask me anything!</div>
+    </div>
+  </div>
+  <div class="ai-input-area">
+    <textarea id="aiInput" placeholder="Ask anything..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI()}"></textarea>
+    <button class="ai-send" id="aiSendBtn" onclick="sendAI()">➤</button>
+  </div>
+</div>
+
+<script>
+// ── AI ASSISTANT ──────────────────────────────────────────
+let aiOpen = false
+let aiHistory = []
+let aiTyping = false
+
+function toggleAI() {
+  aiOpen = !aiOpen
+  document.getElementById('aiSidebar').classList.toggle('open', aiOpen)
+}
+
+function aiQuick(prompt) {
+  document.getElementById('aiInput').value = prompt
+  sendAI()
+}
+
+function addAiMsg(role, text) {
+  const msgs = document.getElementById('aiMessages')
+  const div = document.createElement('div')
+  div.className = `ai-msg ${role}`
+  div.innerHTML = `<div class="ai-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`
+  msgs.appendChild(div)
+  msgs.scrollTop = msgs.scrollHeight
+  return div
+}
+
+function showTyping() {
+  const msgs = document.getElementById('aiMessages')
+  const div = document.createElement('div')
+  div.className = 'ai-msg assistant'
+  div.id = 'aiTypingIndicator'
+  div.innerHTML = '<div class="ai-typing"><span></span><span></span><span></span></div>'
+  msgs.appendChild(div)
+  msgs.scrollTop = msgs.scrollHeight
+}
+
+function removeTyping() {
+  const t = document.getElementById('aiTypingIndicator')
+  if (t) t.remove()
+}
+
+async function sendAI() {
+  if (aiTyping) return
+  const inp = document.getElementById('aiInput')
+  const text = inp.value.trim()
+  if (!text) return
+  inp.value = ''
+  inp.style.height = 'auto'
+
+  addAiMsg('user', escHtml(text))
+  aiHistory.push({ role: 'user', content: text })
+
+  aiTyping = true
+  document.getElementById('aiSendBtn').disabled = true
+  showTyping()
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are a helpful personal assistant built into the dgzs hub dashboard. The user runs a YouTube channel called @vility with 2,809 subscribers. They make gaming content (Minecraft, etc). Help them with YouTube growth, video ideas, titles, descriptions, thumbnails, content strategy, habits, and general life advice. Be friendly, concise, and practical. Use bullet points when listing ideas. Keep responses focused and not too long.`,
+        messages: aiHistory
+      })
+    })
+    const data = await res.json()
+    const reply = data.content?.[0]?.text || 'Sorry, something went wrong. Try again!'
+    removeTyping()
+    addAiMsg('assistant', reply)
+    aiHistory.push({ role: 'assistant', content: reply })
+    if (aiHistory.length > 20) aiHistory = aiHistory.slice(-20)
+  } catch(e) {
+    removeTyping()
+    addAiMsg('assistant', 'Connection error — make sure you\'re on the live GitHub Pages URL, not a local file.')
+  } finally {
+    aiTyping = false
+    document.getElementById('aiSendBtn').disabled = false
+  }
+}
+
+document.getElementById('aiInput').addEventListener('input', function() {
+  this.style.height = 'auto'
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px'
+})
 </script>
+
 </body>
 </html>
