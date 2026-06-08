@@ -565,10 +565,10 @@ function sendAI() {
   aiTyping=true; document.getElementById('aiSend').disabled=true;
   showTyping();
   var messages = [{role:'system', content:'You are a helpful personal assistant inside the dgzs hub dashboard. The user runs the YouTube channel @vility with about 2,809 subscribers making Minecraft and gaming content. Help with YouTube growth, video ideas, titles, descriptions, thumbnails, content strategy, and general productivity. Be friendly, concise, and practical. Use bullet points when listing things.'}].concat(aiHistory);
-  fetch('https://api.openai.com/v1/chat/completions', {
+  fetch('https://api.x.ai/v1/chat/completions', {
     method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer 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},
-    body:JSON.stringify({model:'gpt-4o-mini', max_tokens:1000, messages:messages})
+    headers:{'Content-Type':'application/json','Authorization':'Bearer xai-Zmp7Ciibx8hrtBdv13PTEx3TcBkKufpnABXgbXrgjAWfqunfvtdAezLo3K78Oh1bSconyiNfTC3n6cpQ'},
+    body:JSON.stringify({model:'grok-3-mini', max_tokens:1000, messages:messages})
   })
   .then(function(r){return r.json();})
   .then(function(data) {
@@ -578,7 +578,7 @@ function sendAI() {
     if(aiHistory.length>20) aiHistory=aiHistory.slice(-20);
   })
   .catch(function() {
-    removeTyping(); addAIMsg('assistant','Connection error — check your internet connection and try again.');
+    removeTyping(); addAIMsg('assistant','Connection error — check your internet and try again.');
   })
   .finally(function() { aiTyping=false; document.getElementById('aiSend').disabled=false; });
 }
