@@ -572,7 +572,7 @@ function sendAI() {
   })
   .then(function(r){return r.json();})
   .then(function(data) {
-    var reply = (data.choices&&data.choices[0]&&data.choices[0].message) ? data.choices[0].message.content : 'Something went wrong, try again!';
+    var reply = (data.choices&&data.choices[0]&&data.choices[0].message) ? data.choices[0].message.content : ('API error: ' + JSON.stringify(data.error || data));
     removeTyping(); addAIMsg('assistant', reply);
     aiHistory.push({role:'assistant', content:reply});
     if(aiHistory.length>20) aiHistory=aiHistory.slice(-20);
